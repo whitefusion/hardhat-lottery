@@ -18,8 +18,8 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
   } = currNetworkConfig;
   let vrfCoordinatorV2Address, subscriptionId;
   const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("2");
-
-  if (developmentChains.includes(network.name)) {
+  const isDevChain = developmentChains?.includes(network?.name);
+  if (isDevChain) {
     const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
     vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address;
     const transactionResponse = await vrfCoordinatorV2Mock.createSubscription();
@@ -30,13 +30,13 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     vrfCoordinatorV2Address = testNetVrfCoordinatorV2;
     subscriptionId = testNetSubscriptionId;
   }
-  console.log('deployer: ', deployer);
-  const args = [vrfCoordinatorV2Address, entranceFee, gasLane, subscriptionId, callbackGasLimit, interval]; 
+
+  const args = [vrfCoordinatorV2Address, entranceFee, gasLane, subscriptionId, callbackGasLimit, interval];
   const raffle = await deploy("Raffle", {
     from: deployer,
     args,
     log: true,
-    waitConfirmations: VERIFICATION_BLOCK_CONFIRMATIONS
+    waitConfirmations: isDevChain ? 1 : VERIFICATION_BLOCK_CONFIRMATIONS
   });
 
   if ( !developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY ) {

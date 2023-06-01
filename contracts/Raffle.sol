@@ -11,7 +11,7 @@ pragma solidity ^0.8.18;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 
 error Raffle__NotEnoughETHEntered();
 error Raffle__TransferFailed();
@@ -28,7 +28,7 @@ error Raffle__UpkeepNotNeeded(
  * @notice This contract creates an untamperable de-smart contract
  * @dev This contracts implements Chainlink VRF v2 and Chainlink Automation
  */
-contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
+contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
   /* Type Declaration */
   enum RaffleState {
     OPEN,
@@ -190,5 +190,9 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
 
   function getRequestConfirmations() public pure returns(uint256) {
     return REQUEST_CONFIRMATIONS;
+  }
+
+  function getInterval() public view returns(uint256) {
+    return i_interval;
   }
 }

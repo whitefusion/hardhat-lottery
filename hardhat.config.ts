@@ -8,6 +8,10 @@ import "dotenv/config"
 import "solidity-coverage"
 import "hardhat-deploy"
 
+const { ProxyAgent, setGlobalDispatcher } = require("undici");
+const proxyAgent = new ProxyAgent("http://127.0.0.1:7890");
+setGlobalDispatcher(proxyAgent);
+
 const {
   SEPOLIA_RPC_URL,
   PRIVATE_KEY,
@@ -36,6 +40,19 @@ const config: HardhatUserConfig = {
       default: 1
     }
   },
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY,
+  },  
+  gasReporter: {
+    enabled: false,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+    // coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+  },
+  mocha: {
+     timeout: 100_000,
+  }
 };
 
 export default config;
