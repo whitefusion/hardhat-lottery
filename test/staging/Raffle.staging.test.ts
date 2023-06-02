@@ -51,9 +51,9 @@ developmentChains?.includes(network?.name)
           }
         }); 
         console.log('enter raffle');
-        await raffle.enterRaffle({ value: raffleEntranceFee });
+        const tx = await raffle.enterRaffle({ value: raffleEntranceFee });
+        await tx.wait(1);
         const winnerStartingBalance = await accounts[0].getBalance();
-        console.log('winner starting balance: ', winnerStartingBalance);
       });
     });
   })
